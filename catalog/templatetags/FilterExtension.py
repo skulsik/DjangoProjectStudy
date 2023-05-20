@@ -16,3 +16,8 @@ def mediapath(format_path):
 def mediapath(format_path):
     """ Тег. Возвращает модифицированную строку """
     return f'media/{format_path}'
+
+@register.filter
+def string_clipping(format_str: str):
+    """ Обрезание строки """
+    return mark_safe(format_str[:100])

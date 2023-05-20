@@ -1,0 +1,22 @@
+{% extends 'catalog/base.html' %}
+{% load FilterExtension %}
+{% block content %}
+    <h1 style="color: orange;">{{ title }}</h1>
+    <div class="row mb-2">
+        <div class="card flex-md-row mb-4 box-shadow h-md-300">
+            <div class="col-md-6">
+                  <div class="card-body d-flex flex-column align-items-start">
+                    <strong class="d-inline-block mb-2 text-primary">{{ object.name }}</strong>
+                    <strong class="d-inline-block mb-2 text-primary">Цена: {{ object.price }}руб.</strong>
+                    <p class="card-text mb-5">{{ object.description }}</p>
+                  <div class="mb-1 text-muted">Дата создания: {{ object.date_of_creation }}<br> Дата изменения: {{ object.date_of_change }}</div>
+                  </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card-body d-flex flex-column align-items-start">
+                    <img style="height: 500px; width: 500px; margin-top: 10px; margin-right: 10px;" src="{{ object.image|mediapath }}" alt="image">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
