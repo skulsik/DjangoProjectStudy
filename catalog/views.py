@@ -70,7 +70,6 @@ class BlogView(generic.DetailView):
 
 
 def contacts(request):
-    print(request.POST)
     if request.method == 'POST':
         name: str = request.POST.get('name')
         phone: str = request.POST.get('phone')
