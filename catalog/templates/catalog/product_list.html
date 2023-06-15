@@ -3,7 +3,16 @@
 
 {% block content %}
   <div class="row mb-md-2">
-    <h1 style="color: orange; margin-left: 20px;">{{ title }}</h1>
+    <table width="100%" style="margin-bottom: 20px;">
+        <tr>
+            <td>
+                <h3 style="color: orange;">{{ title }}</h3>
+            </td>
+            <td style="text-align: right;">
+                <a href="{% url 'catalog:product_create' %}" class="btn btn-outline-secondary">Создать новый продукт</a>
+            </td>
+        </tr>
+    </table>
   </div>
   <div class="row mb-2">
     {% for object in object_list %}
@@ -13,7 +22,19 @@
             <strong class="d-inline-block mb-2 text-primary" style="max-width: 45ch;"><a href="{% url 'catalog:product_view' object.id %}">{{ object.name }}</a></strong>
             <strong class="d-inline-block mb-2 text-primary">Цена: {{ object.price }}руб.</strong>
             <p class="card-text mb-auto" style="max-width: 40ch">{{ object.description|string_clipping }}</p>
-          <div class="mb-1 text-muted">Дата создания: {{ object.date_of_creation }}</div>
+            <div class="mb-1 text-muted">
+                Дата создания: {{ object.date_of_creation }}
+            </div>
+              <div class="mb-1 text-muted">
+                  <br>
+              <a href="{% url 'catalog:product_update' object.id %}" class="btn btn-outline-secondary">Изменить продукт</a>
+              <a href="{% url 'catalog:product_delete' object.id %}" class="btn btn-outline-danger">Удалить продукт</a>
+              </div>
+            <div class="mb-1 text-muted">
+            {% for version in version_list %}
+              {% if version.id_product == object %} Версия: {{ version.version_number }}<br> Наименование: {{ version.version_name }} {% endif %}
+            {% endfor %}
+            </div>
           </div>
           <div>
             <img style="height: 150px; width: 150px; margin-top: 10px; margin-right: 10px;" src="{{ object.image|mediapath }}" alt="image">
