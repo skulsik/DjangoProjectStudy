@@ -37,6 +37,21 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
 
+class Version(models.Model):
+    """ Модель версии продукта """
+    id_product = models.ForeignKey('Product', on_delete=models.PROTECT, verbose_name='id продукта')
+    version_number = models.IntegerField(verbose_name='номер версии')
+    version_name = models.CharField(max_length=150, verbose_name='наименование')
+    publication = models.BooleanField(default=False, verbose_name='признак публикации')
+
+    def __str__(self):
+        return f'{self.version_name}'
+
+    class Meta:
+        verbose_name = 'Версия продукта'
+        verbose_name_plural = 'Версии продукта'
+
+
 class Blog(models.Model):
     """ Модель статьи (блога) """
     name = models.CharField(max_length=150, verbose_name='заголовок')
