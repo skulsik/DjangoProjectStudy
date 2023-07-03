@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-from django.views.generic import UpdateView, CreateView, FormView
+from django.views.generic import UpdateView, CreateView, FormView, TemplateView
 from pip._internal.utils._jaraco_text import _
 from catalog.modules.services.utils import generation_password
 from config import settings
@@ -29,20 +29,21 @@ class ProfileUpdateView(UpdateView):
 class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
-    success_url = reverse_lazy('users:confirm_email')
 
     def form_valid(self, form):
         """ Дружественное письмо на почту пользователя, после регистрации """
         new_user = form.save()
-        user_pk = new_user.pk
+        uid = urlsafe_base64_encode(force_bytes(new_user.pk))
         new_token = token_generator.make_token(new_user)
+        activation_url = reverse_lazy('users:verify_email', kwargs={'uidb64': uid, 'token': new_token})
         send_mail(
-            subject='ConstructionStore',
-            message=f'Убедительная просьба: если хотите закончить регистрацию, пройдите по ссылке: http://127.0.0.1:8000/users/verify_email/{ urlsafe_base64_encode(force_bytes(user_pk)) }/{ new_token }',
+            subject='ConstructionStore - Активация учетной записи',
+            message=f'Убедительная просьба: если хотите закончить регистрацию, пройдите по ссылке: http://127.0.0.1:8000/{ activation_url }',
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[new_user.email]
+            recipient_list=[new_user.email],
+            fail_silently=False
         )
-        return super().form_valid(form)
+        return redirect('users:confirm_email')
 
 
 class UserPasswordResetView(PasswordContextMixin, FormView):
@@ -73,19 +74,19 @@ class UserPasswordResetDoneView(PasswordResetDoneView):
 
 class UserActivate(View):
     def get(self, request, uidb64, token):
-        #user = self.get_user(uidb64)
-        try:
-            uid = urlsafe_base64_decode(uidb64)
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
-            user = None
+        user = self.get_user(uidb64)
 
         if user is not None and token_generator.check_token(user, token):
             user.email_verify = True
             user.save()
             login(request, user)
-            print('user activate')
-            return redirect('users:login')
+            send_mail(
+                subject='ConstructionStore - Успешная активация',
+                message=f'Вы успешно активировали учетную запись!\nС уважением администрация ConstructionStore.',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email]
+            )
+            return redirect('users:user_activate')
         return redirect('users:invalid_user_activate')
 
 
@@ -99,5 +100,5 @@ class UserActivate(View):
         return user
 
 
-class InvalidUserActivate(View):
+class InvalidUserActivate(TemplateView):
     template_name = 'users/invalid_user_activate.html'

@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-fdgjkfjg kfjglkfd
-</body>
-</html>
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+<div class="col-3"></div>
+<div class="col-6">
+    <div class="card">
+        <div class="card-header">
+            Верификация прошла успешно!
+        </div>
+        <div class="card-body">
+            Ваша учетная запись успешно активирована!
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'catalog:products' %}" class="btn btn-success">На главную</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
