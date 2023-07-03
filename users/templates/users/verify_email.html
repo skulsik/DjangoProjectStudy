@@ -1,0 +1,5 @@
+Вас приветствует администрация ConstructionStore.
+{% autoescape off %}
+Убедительная просьба: если хотите закончить регистрацию, пройдите по ссылке:
+http://{{ domain }}{% url 'verify_email' uidb64=uid token=token %}
+{% endautoescape %}

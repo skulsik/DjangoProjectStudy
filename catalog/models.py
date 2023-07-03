@@ -1,6 +1,4 @@
 from django.db import models
-from django.urls import reverse
-
 from catalog.modules.services.utils import unique_slugify
 
 NULLABLE = {'blank': True, 'null': True}
@@ -15,6 +13,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='цена продукта')
     date_of_creation = models.DateTimeField(verbose_name='дата создания')
     date_of_change = models.DateTimeField(verbose_name='дата последнего изменения')
+    user = models.ForeignKey('users.user', on_delete=models.PROTECT, verbose_name='id пользователя')
 
     def __str__(self):
         return f'{self.name}'
@@ -22,6 +21,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+        db_table = 'user'
 
 
 class Category(models.Model):

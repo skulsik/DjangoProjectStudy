@@ -9,7 +9,9 @@
                 <h3 style="color: orange;">{{ title }}</h3>
             </td>
             <td style="text-align: right;">
-                <a href="{% url 'catalog:product_create' %}" class="btn btn-outline-secondary">Создать новый продукт</a>
+                {% if  user.email %}
+                    <a href="{% url 'catalog:product_create' %}" class="btn btn-outline-secondary">Создать новый продукт</a>
+                {% endif %}
             </td>
         </tr>
     </table>
@@ -27,8 +29,10 @@
             </div>
               <div class="mb-1 text-muted">
                   <br>
-              <a href="{% url 'catalog:product_update' object.id %}" class="btn btn-outline-secondary">Изменить продукт</a>
-              <a href="{% url 'catalog:product_delete' object.id %}" class="btn btn-outline-danger">Удалить продукт</a>
+                  {% if  object.user.email == user.email %}
+                    <a href="{% url 'catalog:product_update' object.id %}" class="btn btn-outline-secondary">Изменить продукт</a>
+                    <a href="{% url 'catalog:product_delete' object.id %}" class="btn btn-outline-danger">Удалить продукт</a>
+                  {% endif %}
               </div>
             <div class="mb-1 text-muted">
             {% for version in version_list %}
