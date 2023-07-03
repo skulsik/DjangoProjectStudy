@@ -1,7 +1,11 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.http import request
 
+import users
 from catalog.models import *
+
 
 
 class FormStyleMixin:
@@ -74,9 +78,15 @@ class ProductCreateViewForm(FormStyleMixin, forms.ModelForm):
                     'Вы использовали запрещенные слова "Казино, криптовалюта, крипта, биржа, дешево, бесплатно, обман, полиция, радар."')
 
         return description
+
     class Meta:
         model = Product
-        fields = ('__all__')
+        fields = ('name', 'description', 'image', 'category', 'price', 'date_of_creation', 'date_of_change')
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['user'] = User.objects().user
+    #     print(user)
 
 
 class VersionForm(FormStyleMixin, forms.ModelForm):

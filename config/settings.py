@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'catalog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,33 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Аунтификация
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Email
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'skulsik1@gmail.com'
+# EMAIL_HOST_PASSWORD = os.getenv('email_pass')
+# EMAIL_PORT = 465
+# pass = rqxywlcwymlxknie
+
+# gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'skulsik1@gmail.com'
+DEFAULT_FROM_EMAIL = 'skulsik1@gmail.com'
+SERVER_EMAIL = 'skulsik1@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv('email_gmail_pass')
+
+# yandex
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_HOST_USER = 'vashenko.a.v@yandex.ru'
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True

@@ -1,11 +1,10 @@
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
-
-import catalog
 from catalog.forms import *
 from catalog.models import Product, Blog, Version
 from django.views import generic
+from users.models import User
 
 
 class AllProductsView(generic.ListView):
@@ -15,13 +14,11 @@ class AllProductsView(generic.ListView):
         'title': 'Список последних товаров'
     }
 
-    # def get_version(self):
-    #     return Version.objects.filter(publication=True).first()
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         version = Version.objects.filter(publication=True)
         context_data['version_list'] = version
+        context_data['user'] = self.request.user
         return context_data
 
 
@@ -44,13 +41,22 @@ class ProductCreateView(generic.CreateView):
         """ Берем slug из данного объекта """
         return reverse_lazy('catalog:product_view', args=(self.object.id,))
 
+    def form_valid(self, form):
+        """ Автоматически сохраняет текущего пользователя в поле user """
+        # Создает форму в памяти, без отправки в бд
+        self.object = form.save(commit=False)
+        # Передает текущего пользователя в user
+        self.object.user = self.request.user
+        # Сохраняет в бд
+        self.object.save()
+        return super(ProductCreateView, self).form_valid(form)
+
 
 class ProductUpdateView(generic.UpdateView):
     """ Обновление продукта """
     model = Product
     form_class = ProductCreateViewForm
     template_name = 'catalog/product_form.html'
-    #success_url = reverse_lazy('catalog:products')
 
     def get_success_url(self, *args, **kwargs):
         return reverse('catalog:product_update', args=[self.get_object().pk])
