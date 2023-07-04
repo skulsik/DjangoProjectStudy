@@ -1,10 +1,9 @@
 from django.forms import inlineformset_factory
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from catalog.forms import *
 from catalog.models import Product, Blog, Version
 from django.views import generic
-from users.models import User
 
 
 class AllProductsView(generic.ListView):
