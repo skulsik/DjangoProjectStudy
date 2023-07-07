@@ -49,7 +49,15 @@ class BlogCreateViewForm(FormStyleMixin, forms.ModelForm):
         fields = ('name', 'content', 'image', 'date_of_creation')
 
 
-class ProductCreateViewForm(FormStyleMixin, forms.ModelForm):
+class UserFromRequestForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        """ Получает пользователя """
+        user = kwargs.pop('user')
+        super(UserFromRequestForm, self).__init__(*args, **kwargs)
+        self._user = user
+
+
+class ProductCreateViewForm(UserFromRequestForm, FormStyleMixin, forms.ModelForm):
     bad_list_words = [
         'казино',
         'криптовалюта',
@@ -79,14 +87,20 @@ class ProductCreateViewForm(FormStyleMixin, forms.ModelForm):
 
         return description
 
+    def __init__(self, *args, **kwargs):
+        """ Если нет прав на определенное действие, просто прячем поле в форме """
+        super(ProductCreateViewForm, self).__init__(*args, **kwargs)
+
+        if not self._user.has_perm('catalog.can_deactivate_product'):
+            self.fields['is_active'].widget = forms.HiddenInput()
+        if not self._user.has_perm('catalog.can_description_product'):
+            self.fields['description'].widget = forms.HiddenInput()
+        if not self._user.has_perm('catalog.can_category_product'):
+            self.fields['category'].widget = forms.HiddenInput()
+
     class Meta:
         model = Product
-        fields = ('name', 'description', 'image', 'category', 'price', 'date_of_creation', 'date_of_change')
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['user'] = User.objects().user
-    #     print(user)
+        fields = ('__all__')
 
 
 class VersionForm(FormStyleMixin, forms.ModelForm):

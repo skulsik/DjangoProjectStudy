@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import PasswordResetDoneView, PasswordContextMixin
@@ -17,7 +18,7 @@ from users.forms import UserForm, UserRegisterForm
 from users.models import User
 
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserForm
     success_url = reverse_lazy('users:profile')
