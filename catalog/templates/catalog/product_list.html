@@ -9,7 +9,7 @@
                 <h3 style="color: orange;">{{ title }}</h3>
             </td>
             <td style="text-align: right;">
-                {% if  user.email %}
+                {% if perms.catalog.add_product %}
                     <a href="{% url 'catalog:product_create' %}" class="btn btn-outline-secondary">Создать новый продукт</a>
                 {% endif %}
             </td>
@@ -30,8 +30,12 @@
               <div class="mb-1 text-muted">
                   <br>
                   {% if  object.user.email == user.email %}
+                  {% if perms.catalog.change_product %}
                     <a href="{% url 'catalog:product_update' object.id %}" class="btn btn-outline-secondary">Изменить продукт</a>
+                  {% endif %}
+                  {% if perms.catalog.delete_product %}
                     <a href="{% url 'catalog:product_delete' object.id %}" class="btn btn-outline-danger">Удалить продукт</a>
+                  {% endif %}
                   {% endif %}
               </div>
             <div class="mb-1 text-muted">

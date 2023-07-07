@@ -14,6 +14,7 @@ class Product(models.Model):
     date_of_creation = models.DateTimeField(verbose_name='дата создания')
     date_of_change = models.DateTimeField(verbose_name='дата последнего изменения')
     user = models.ForeignKey('users.user', on_delete=models.PROTECT, verbose_name='id пользователя')
+    is_active = models.BooleanField(default=False, verbose_name='признак публикации')
 
     def __str__(self):
         return f'{self.name}'
@@ -22,6 +23,20 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         db_table = 'user'
+        permissions = [
+            (
+                "can_deactivate_product",
+                "Can deactivate product"
+            ),
+            (
+                "can_description_product",
+                "Can description product"
+            ),
+            (
+                "can_category_product",
+                "Can category product"
+            )
+        ]
 
 
 class Category(models.Model):

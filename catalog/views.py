@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -12,6 +13,11 @@ class AllProductsView(generic.ListView):
     extra_context = {
         'title': 'Список последних товаров'
     }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -31,9 +37,10 @@ class ProductView(generic.DetailView):
         return context_data
 
 
-class ProductCreateView(generic.CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     """ Создание продукта """
     model = Product
+    permission_required = "catalog.add_product"
     form_class = ProductCreateViewForm
 
     def get_success_url(self):
@@ -51,9 +58,17 @@ class ProductCreateView(generic.CreateView):
         return super(ProductCreateView, self).form_valid(form)
 
 
-class ProductUpdateView(generic.UpdateView):
+class UserToFormMixin(object):
+    def get_form_kwargs(self):
+        kwargs = super(UserToFormMixin, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+
+class ProductUpdateView(UserToFormMixin, LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     """ Обновление продукта """
     model = Product
+    permission_required = "catalog.change_product"
     form_class = ProductCreateViewForm
     template_name = 'catalog/product_form.html'
 
@@ -79,9 +94,10 @@ class ProductUpdateView(generic.UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(generic.DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     """ Удаление продукта """
     model = Product
+    permission_required = "catalog.delete_product"
     success_url = reverse_lazy('catalog:products')
 
 
@@ -98,7 +114,7 @@ class BlogsView(generic.ListView):
         return queryset
 
 
-class BlogCreateView(generic.CreateView):
+class BlogCreateView(LoginRequiredMixin, generic.CreateView):
     """ Создание блога """
     model = Blog
     form_class = BlogCreateViewForm
@@ -108,14 +124,14 @@ class BlogCreateView(generic.CreateView):
         return reverse_lazy('catalog:blog_view', args=(self.object.slug,))
 
 
-class BlogUpdateView(generic.UpdateView):
+class BlogUpdateView(LoginRequiredMixin, generic.UpdateView):
     """ Обновление блога """
     model = Blog
     form_class = BlogCreateViewForm
     success_url = reverse_lazy('catalog:blogs')
 
 
-class BlogDeleteView(generic.DeleteView):
+class BlogDeleteView(LoginRequiredMixin, generic.DeleteView):
     """ Удаление блога """
     model = Blog
     success_url = reverse_lazy('catalog:blogs')
