@@ -6,6 +6,8 @@ from catalog.forms import *
 from catalog.models import Product, Blog, Version
 from django.views import generic
 
+from catalog.modules.services.cache import get_category_subjects
+
 
 class AllProductsView(generic.ListView):
     """ Все продукты """
@@ -99,6 +101,16 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.Del
     model = Product
     permission_required = "catalog.delete_product"
     success_url = reverse_lazy('catalog:products')
+
+
+class CategoryView(generic.ListView):
+    """ Отображение одного продукта """
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category_list'] = get_category_subjects(self.object_list)
+        return context_data
 
 
 class BlogsView(generic.ListView):
