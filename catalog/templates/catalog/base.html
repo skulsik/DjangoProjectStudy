@@ -25,12 +25,16 @@
             <a class="nav-link" href="{% url 'catalog:products' %}">Главная <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'catalog:category' %}">Категории <span class="sr-only">(current)</span></a>
           </li>
-           <li class="nav-item active">
+          <li class="nav-item active">
             <a class="nav-link" href="{% url 'catalog:blogs' %}">Блог <span class="sr-only">(current)</span></a>
           </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты <span class="sr-only">(current)</span></a>
+          </li>
           {% if user.is_authenticated %}
+          |
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'users:profile' %}">Профиль <span class="sr-only">(current)</span></a>
           </li>
