@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h1 style="color: orange;">Список категорий</h1>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <td>Id</td>
+                            <td>Наименование</td>
+                            <td>Описание</td>
+                        </tr>
+                        {% for object in object_list %}
+                        <tr>
+                            <td>{{ object.id }}</td>
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+{% endblock %}
